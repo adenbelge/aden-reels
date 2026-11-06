@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Sınav oturumu katmanı</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+@keyframes serit{from{transform:translateX(-120%) skewX(-28deg)}to{transform:translateX(0) skewX(-28deg)}}
+@keyframes seritSag{from{transform:translateX(120%) skewX(-28deg)}to{transform:translateX(0) skewX(-28deg)}}
+@keyframes yuksel{from{transform:translateY(60px)}to{transform:translateY(0)}}
+@keyframes kayma{from{transform:translateX(-80px)}to{transform:translateX(0)}}
+@keyframes yakin{from{transform:scale(.92)}to{transform:scale(1)}}
+@keyframes zipla{0%{transform:scale(.7)}70%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes gel{from{opacity:0;transform:translateY(70px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nabiz{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+/* EĞİK AÇILIŞ + PARILTI TEK GEOMETRİ (kullanıcı 06.11.2026): kutu 110° (-20° eğik) degrade maskeyle soldan sağa açılır; parıltı bandı AYNI degrade
+   biçimiyle (300% boy, %45 merkez) AYNI zaman eğrisiyle ilerler → açılışın ön kenarı = parıltının ilk geçişi; sonraki geçişler aralıksız sürer. */
+@keyframes acil{from{-webkit-mask-position:100% 0;mask-position:100% 0}to{-webkit-mask-position:0 0;mask-position:0 0}}
+@keyframes parilti{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+@keyframes paritiIlk{from{background-position:100% 0}to{background-position:0 0}}
+.h-tarih,.h-ucret{-webkit-mask-image:linear-gradient(110deg,#000 42%,transparent 48%);mask-image:linear-gradient(110deg,#000 42%,transparent 48%);-webkit-mask-size:300% 100%;mask-size:300% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.bant{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(110deg,rgba(255,255,255,0) 40%,rgba(255,255,255,0.45) 45%,rgba(255,255,255,0) 50%);background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0}
+@keyframes cizgi{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* 0. kare: il + meslek + tarih + saat ekranda (kanca; gecikmesiz). 2. sn: ücret + başvuru eklenir, öncekiler kalır. */
+.h-serit1{animation:serit .6s cubic-bezier(.2,.8,.2,1) both}
+.h-serit2{animation:serit .6s .1s cubic-bezier(.2,.8,.2,1) both}
+.h-seritSag1{animation:seritSag .6s cubic-bezier(.2,.8,.2,1) both}
+.h-seritSag2{animation:seritSag .6s .1s cubic-bezier(.2,.8,.2,1) both}
+.h-yuksel{animation:yuksel .6s cubic-bezier(.2,.8,.2,1) both}
+.h-kayma{animation:kayma .6s cubic-bezier(.2,.8,.2,1) both}
+.h-yakin{animation:yakin .6s cubic-bezier(.2,.8,.2,1) both}
+.h-tarih{animation:acil .5s cubic-bezier(.2,.8,.2,1) both}
+.h-ucret{animation:acil .5s 2s cubic-bezier(.2,.8,.2,1) both}
+.h-pin{animation:nabiz 1.6s .8s ease-in-out infinite}
+.h-cizgi{transform-origin:left;animation:cizgi .8s .2s cubic-bezier(.2,.8,.2,1) both}
+.h-parilti{animation:paritiIlk .5s cubic-bezier(.2,.8,.2,1), parilti 1.6s .5s ease-in-out infinite}
+.h-parilti2{animation:paritiIlk .5s 2s cubic-bezier(.2,.8,.2,1), parilti 1.6s 2.5s ease-in-out infinite}
+@keyframes ok{0%,100%{transform:translateX(0)}50%{transform:translateX(14px)}}
+@keyframes nabizKutu{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.h-ok{animation:ok .8s 2.7s ease-in-out infinite}
+.h-cta{animation:nabizKutu 1.6s 2.7s ease-in-out infinite}
+</style>
+</helmet>
+<div style="position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #ffffff; background: transparent">
+
+<sc-if value="{{onizleme}}" hint-placeholder-val="{{ true }}">
+<img src="{{kare}}" alt="" style="position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover">
+</sc-if>
+
+<div style="position: absolute; left: 0; top: 0; width: 1080px; height: 420px; background: {{t.ustPerde}}"></div>
+<div style="position: absolute; left: 0; top: 860px; width: 1080px; height: 1060px; background: {{t.altPerde}}"></div>
+
+
+
+<img src="/_blob/a9b17b44cea2936eb29ae63c9c2d9d93" alt="ADEN" style="display: {{logoGorunum}}; position: absolute; left: {{t.logoSol}}px; top: {{t.logoUst}}px; width: {{t.logoEn}}px; height: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)) drop-shadow(0 0 2px rgba(17,28,72,0.6))">
+
+<div class="{{c.kart}}" style="position: absolute; left: {{t.panelSol}}px; bottom: {{t.panelAlt}}px; width: {{t.panelEn}}px; box-sizing: border-box; padding: {{t.panelPay}}; display: flex; flex-direction: column; align-items: {{t.hiza}}; text-align: {{t.metinHiza}}; gap: 12px; background: {{t.panelZemin}}; border-radius: {{t.panelKose}}px; backdrop-filter: {{t.panelBulanik}}">
+
+<div style="font-size: {{baslikBoy}}px; line-height: 0.98; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-wrap: balance; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.45), 0 14px 36px rgba(0,0,0,0.5)">{{meslek}}</div>
+<div style="margin-top: -6px; font-size: {{belgeBoy}}px; line-height: 1; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #ffffff; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.45), 0 14px 36px rgba(0,0,0,0.5)">MYK Belgesi</div>
+
+<div style="display: flex; flex-direction: {{t.satir}}; align-items: stretch; gap: 22px">
+<div style="flex: none; display: flex; filter: drop-shadow(0 18px 24px rgba(0,0,0,0.45))">
+<div class="{{c.tarih}}" style="position: relative; overflow: hidden; flex: none; width: 184px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 12px 0 14px; background: {{t.vurgu}}; border-radius: {{t.tarihKose}}; color: {{t.tarihYazi}}; text-shadow: {{t.tarihGolge}}">
+<!-- başvuru kutusuyla aynı hareket: nabız + parıltı, aynı anda -->
+<div class="{{c.cta}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+<div style="font-size: 32px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase">{{ay}}</div>
+<div style="font-size: 112px; line-height: 0.92; font-weight: 900">{{gun}}</div>
+<div style="font-size: 28px; font-weight: 700; opacity: 0.8">{{yil}}</div>
+</div>
+<div class="bant {{c.parilti}}"></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: {{t.hiza}}; gap: 10px">
+<div style="display: flex"><div style="padding: 8px 20px; border: 3px solid rgba(255,255,255,0.85); border-radius: 999px; font-size: 32px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap">Seviye {{seviye}}</div></div>
+<div style="display: flex; flex-direction: {{t.satir}}; align-items: center; gap: 12px; font-size: 46px; font-weight: 800">
+<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="{{t.ikon}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+{{gunAdi}} · {{saat}}
+</div>
+<div style="display: flex; flex-direction: {{t.satir}}; align-items: center; gap: 12px; font-size: 54px; font-weight: 900; text-transform: uppercase; color: #ffffff">
+<svg class="{{c.pin}}" width="46" height="46" viewBox="0 0 24 24" fill="{{t.ikon}}" stroke="{{t.ikon}}" stroke-width="1" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.6" fill="#1a2a68" stroke="none"></circle></svg>
+{{il}}
+</div>
+</div>
+</div>
+
+<div style="align-self: stretch; display: flex; filter: drop-shadow(0 16px 20px rgba(0,0,0,0.30))">
+<div class="{{c.ucret}}" style="position: relative; flex: 1 1 auto; display: flex; flex-wrap: wrap; flex-direction: {{t.satir}}; align-items: stretch; border-radius: 22px; overflow: hidden; text-align: left">
+<div style="flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 10px 20px; background: #ffffff; color: #1a2a68">
+<div style="font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: {{t.ayRenk}}">Toplam ücret</div>
+<div style="font-size: 52px; line-height: 1; font-weight: 900; white-space: nowrap">{{toplam}} TL</div>
+<div style="font-size: 24px; line-height: 1.25; font-weight: 700; opacity: 0.85; white-space: nowrap">sınav + belge basım · {{ucretNot}}</div>
+</div>
+<div class="{{c.cta}}" style="position: relative; overflow: hidden; flex: 1 1 300px; min-width: 300px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 20px; background: {{t.cta}}; color: {{t.ctaYazi}}">
+<div style="display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px">Başvuru</span><span style="font-size: 34px; line-height: 1.05; font-weight: 800">adenbelge.com.tr</span></div>
+<svg class="{{c.ok}}" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</div>
+<div class="bant {{c.parilti2}}"></div>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tasarim":{"editor":"int","default":0,"min":0,"max":15,"section":"Katman"},"meslek":{"editor":null,"default":"Sorumlu Emlak Danışmanı"},"seviye":{"editor":null,"default":"5"},"il":{"editor":null,"default":"Elazığ"},"gun":{"editor":null,"default":"21"},"ay":{"editor":null,"default":"Kasım"},"yil":{"editor":null,"default":"2026"},"gunAdi":{"editor":null,"default":"Cumartesi"},"saat":{"editor":null,"default":"08:30"},"ucret":{"editor":null,"default":"14.250"},"ucretNot":{"editor":null,"default":"KDV dahil"},"basim":{"editor":null,"default":"1.500"},"kare":{"editor":null,"default":"/_blob/a1f4e466dc258fabaffe2028efd04bc9"},"onizleme":{"editor":"boolean","default":true,"section":"Katman"},"hareket":{"editor":"boolean","default":true,"section":"Katman"},"logo":{"editor":"boolean","default":true,"section":"Katman"},"platform":{"editor":"enum","options":["ig","fb","yt"],"default":"ig","section":"Katman"},"renk":{"editor":"int","default":0,"min":0,"max":15,"section":"Katman"},"$preview":{"width":1080,"height":1920}}'>
+class Component extends DCLogic {
+// 16 TASARIM — tek sahip; video üretici tools/reels/reels_video.py bu sınıfı çalıştırır.
+// renk paleti = props.renk (plan: ReelsPlani::renkler, platform başına) · yerleşim yalnız sol · tarih köşesi + giriş hareketi = tasarım % 4
+// ZAMAN: 0. kare il + meslek + seviye + tarih + saat (kanca, gecikmesiz) · 2. sn ücret + başvuru eklenir · hiçbir bilgi ekrandan silinmez.
+paletler() {
+// 16 RENK AİLESİ (kullanıcı onayı bekliyor 04.11.2026) — [ad, vurgu, perde]; haki / gri / soluk yok
+const T = [
+// KRALİYET PALETİ (kullanıcı 04.11.2026): mücevher tonu zemin + metal/taş vurgu; sarı-mor-kırmızı ağırlıklı ve beyaza yakın renk yok.
+// Diziliş ölçüldü (CIELAB ΔE): herhangi iki palet arası vurgu + zemin farkı ≥ 53, vurgu kendi zemininde ≥ 45, vurgular arası ≥ 14,6
+['Kraliyet laciverti × Deniz yeşili', '#2E8B57', '#1B2A6B'],
+['Zümrüt × Gümüş mavisi', '#8DA9C4', '#0B5E3F'],
+['Safir × ADEN açık mavi', '#15A5DF', '#0F2D5C'],
+['Petrol × Parliament mavi', '#2F5FA7', '#0E5A5C'],
+['Gece × Altın', '#D4AF37', '#0B1026'],
+['Yeşim × Antik altın', '#B8860B', '#0C4A3E'],
+['Okyanus × Bronz', '#CD7F32', '#0B4F7A'],
+['Derin zümrüt × Yeşim taşı', '#00A86B', '#004225'],
+['Mürekkep × Nane', '#7FC8A9', '#14213D'],
+['Orman × Şampanya', '#E6C79C', '#12372A'],
+['Deniz × Zümrüt taşı', '#50C878', '#0A4D68'],
+['Oniks × Çelik mavisi', '#5B8DD6', '#121417'],
+['Kobalt × Gök mavisi', '#7EC8E3', '#1F3FA0'],
+['Gece yeşili × Tavus mavisi', '#0E9AA7', '#0F2E26'],
+['Çelik × Kraliyet mavisi', '#4169E1', '#22344A'],
+['Arduvaz × Gül altın', '#B76E79', '#1E2A38']
+];
+const rgb = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
+const L = (h) => rgb(h).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }).reduce((t, x, k) => t + x * [0.2126, 0.7152, 0.0722][k], 0);
+// YAZI HEP BEYAZ (kullanıcı 06.11.2026 "beyaz daha dikkat çekici" → "UYGUN"): tarih ve başvuru kutusunun zemini, aynı tonda kalarak
+// beyaz yazıya en az 3:1 (WCAG büyük/kalın yazı) verene kadar koyulaşır — tek kural, aileye özel ayar yok. Simge ve şerit ailenin özgün rengini korur.
+const hex = (c) => '#' + c.map((x) => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, '0')).join('');
+const koyulas = (h) => { let c = rgb(h); for (let i = 0; i < 100 && 1.05 / (L(hex(c)) + 0.05) < 3; i++) c = c.map((x) => x * 0.98); return hex(c); };
+return T.map(([ad, v, d]) => { const z = koyulas(v);
+return { ad, koyu: rgb(d), cip: [z, '#ffffff'], vurgu: z, ozgun: v, ay: d, cta: [z, '#ffffff'], serit: [v, '#ffffff'] }; });
+}
+// her platformun kendi güvenli alanı (kullanıcı 04.11.2026: ortak alan yok) — ölçüm: telefondan ekran görüntüleri
+// ig: yan kırpma yok, altta hesap + açıklama ~300 px · fb: yanlardan ~100 px kırpar, sağda düğmeler, altta ~350 px · yt: yanlardan ~100 px, altta kanal satırı ~420 px
+guvenli() {
+// ust: üstte arayüzün kapladığı bant — ig 190 = ana akış hesap satırı; fb / yt 113 = durum çubuğunun altı (üst simgeler sağda, sol üst boş) — hepsi kullanıcının telefon ekran görüntülerinden 04.11.2026 — logo bu bandın hemen altına, kendi sol güvenli kenarına
+// yt alt 560: Shorts kanal satırı (@kanal · Abone ol) videonun 1.381. pikselinden başlar (kullanıcı ekran görüntüsü) — yazı bloğu onun üstünde biter
+// logoEn: Facebook / YouTube kırpılan dar alanda logo küçülür (yüzle çakışmasın)
+// ig ust 270 (06.11.2026): profil ızgarası 9:16'yı 3:4 kırpar → üstten 240 px görünmez; 190'da logo (üst 202) kesik görünüyordu (kullanıcı ekran görüntüsü)
+// ig ust 300 + alt 420 (06.11.2026): akış 4:5 kesiminde logo (282) kesiliyordu → 312; Instagram akışı Reels'i 4:5 kırpar (y 285–1635) → kutu alt kenarı 1600'de sınırdaydı; 1500'e çekildi (kullanıcı ekran görüntüsü)
+const tablo = { ig: { sol: 64, en: 850, alt: 420, ust: 300, logoEn: 240 }, fb: { sol: 130, en: 730, alt: 400, ust: 113, logoEn: 200 }, yt: { sol: 130, en: 730, alt: 560, ust: 113, logoEn: 200 } };
+return tablo[this.props.platform] || tablo.yt;
+}
+tasarimDegerleri(n) {
+const y = 0, b = n % 4;   // yerleşim yalnız SOL (kullanıcı 04.11.2026); tarih köşesi + giriş hareketi n % 4
+const p = this.paletler()[((Number(this.props.renk ?? n) % 16) + 16) % 16];
+const g = this.guvenli();
+// saydam perde (üst + alt gradyan) TÜM paletlerde aynı: palet 8 zemini #14213D (kullanıcı 06.11.2026, DfZTK1xACeJ Motorlu Kara Taşıtları Elazığ/Tunceli örneği);
+// kutu, çip, yazı, şerit renkleri palete göre aynen kalır
+const r = (a) => this.paletler()[8].koyu.join(',') + ',' + a;
+const cam = false, bant = false;
+const yer = [
+{ panelSol: g.sol, panelEn: g.en, hiza: 'flex-start', metinHiza: 'left', satir: 'row', serit1Sol: -90, serit2Sol: 140, logoSol: g.sol, seritSag: false },
+{ panelSol: g.sol, panelEn: g.en, hiza: 'flex-end', metinHiza: 'right', satir: 'row-reverse', serit1Sol: 960, serit2Sol: 880, logoSol: g.sol, seritSag: true },
+{ panelSol: g.sol, panelEn: g.en, hiza: 'center', metinHiza: 'center', satir: 'row', serit1Sol: -90, serit2Sol: 140, logoSol: g.sol, seritSag: false },
+{ panelSol: g.sol, panelEn: g.en, hiza: 'flex-start', metinHiza: 'left', satir: 'row', serit1Sol: 960, serit2Sol: 880, logoSol: g.sol, seritSag: true }
+][y];
+return Object.assign({}, yer, {
+ustPerde: 'linear-gradient(180deg, rgba(' + r(0.78) + ') 0%, rgba(' + r(0.35) + ') 55%, rgba(' + r(0) + ') 100%)',
+altPerde: cam
+? 'linear-gradient(180deg, rgba(' + r(0) + ') 0%, rgba(' + r(0.35) + ') 40%, rgba(' + r(0.65) + ') 100%)'
+: 'linear-gradient(180deg, rgba(' + r(0) + ') 0%, rgba(' + r(0.5) + ') 30%, rgba(' + r(0.68) + ') 62%, rgba(' + r(0.72) + ') 100%)',
+cipZemin: p.cip[0], cipYazi: p.cip[1], vurgu: p.vurgu, ikon: p.ozgun, ayRenk: p.ay,
+logoUst: g.ust + 12, logoEn: g.logoEn,
+cta: p.cta[0], ctaYazi: p.cta[1], tarihYazi: p.cta[1],
+tarihGolge: p.cta[1] === '#ffffff' ? '0 2px 0 rgba(0,0,0,0.35), 0 5px 14px rgba(0,0,0,0.45)' : '0 2px 0 rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.3)', serit1: p.serit[0], serit2: p.serit[1],
+tarihKose: ['28px', '12px', '0px', '20px'][b], tarihBoy: 'auto',
+kart: ['h-yuksel', 'h-kayma', 'h-yakin', 'h-yuksel'][b],
+panelPay: cam ? '30px 32px' : '0px',
+// içeriğin (başvuru şeridinin) alt kenarı her tasarımda alttan 440 px; yanlarda Facebook ve Shorts ~100 px kırpar + sağda düğmeler → içerik x 130–860; zemini olan panelde zemin iç boşluk kadar aşağı taşar
+panelAlt: g.alt - (cam ? 30 : 0),   // 04.11.2026 ekran görüntüleriyle: Facebook alt örtü ~350, YouTube Shorts kanal satırı ~420 px (320 denendi, geri alındı)
+panelZemin: cam ? 'rgba(' + r(0.55) + ')' : 'transparent',
+panelKose: cam && !bant ? 36 : 0,
+panelBulanik: cam ? 'blur(18px)' : 'none'
+});
+}
+renderVals() {
+const p = this.props;
+const meslek = p.meslek ?? 'Sorumlu Emlak Danışmanı';
+const uzun = meslek.length;
+const baslikBoy = uzun > 34 ? 56 : uzun > 24 ? 64 : uzun > 16 ? 76 : 88;   // 750 px içerik genişliği (Facebook yan kırpması)
+const h = p.hareket ?? true;
+const t = this.tasarimDegerleri(((Number(p.tasarim ?? 0) % 16) + 16) % 16);
+const k = (ad) => (h ? ad : '');
+const sayi = (s) => parseInt(String(s).replace(/\./g, ''), 10);
+const toplam = String(sayi(p.ucret ?? '14.250') + sayi(p.basim ?? '1.500')).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+return {
+meslek, baslikBoy, belgeBoy: Math.round(baslikBoy * 0.6), t, toplam, logoGorunum: (p.logo ?? true) ? 'block' : 'none',
+seviye: p.seviye ?? '5', il: p.il ?? 'Elazığ', gun: p.gun ?? '21', ay: p.ay ?? 'Kasım', yil: p.yil ?? '2026',
+gunAdi: p.gunAdi ?? 'Cumartesi', saat: p.saat ?? '08:30', ucretNot: p.ucretNot ?? 'KDV dahil',
+kare: p.kare ?? '/_blob/a1f4e466dc258fabaffe2028efd04bc9', onizleme: p.onizleme ?? true,
+c: { serit1: k(t.seritSag ? 'h-seritSag1' : 'h-serit1'), serit2: k(t.seritSag ? 'h-seritSag2' : 'h-serit2'), kart: k(t.kart), tarih: k('h-tarih'), ucret: k('h-ucret'), pin: k('h-pin'), cizgi: k('h-cizgi'), parilti: k('h-parilti'), parilti2: k('h-parilti2'), cta: k('h-cta'), ok: k('h-ok') }
+};
+}
+}
+</script>
+</body>
+</html>
