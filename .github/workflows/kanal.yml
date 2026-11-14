@@ -1,0 +1,30 @@
+# KANAL İSTATİSTİK — SAATLİK (06.11.2026, kullanıcı "ELMA İLE ELMA, ARMUT İLE ARMUT"): tools/reels/kanal_saatlik.py her saat
+# Google (Search Console saatlik) + Facebook/Instagram/YouTube (tüm gönderilerin birikimli izlenmesi) → PROD kur_kanal_saatlik (imzalı uç).
+# Panel /yonetim/kanal-istatistik okur. Saat başından 5 dk sonra (GitHub zamanlayıcısı gecikebilir; kayıt gerçek saatine yazılır).
+name: Kanal
+on:
+  workflow_dispatch:   # 11.11.2026: saatlik zamanlama kaldırıldı — ölçüm reels.yml 'kanal' işinde, günde iki kez yayından önce
+concurrency:
+  group: kanal
+  cancel-in-progress: false
+jobs:
+  kanal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bağımlılıklar
+        run: pip install requests google-api-python-client google-auth
+      - name: Saatlik kayıt
+        env:
+          META_SOSYAL_TOKEN: ${{ secrets.META_SOSYAL_TOKEN }}
+          META_IG_HESAP: ${{ secrets.META_IG_HESAP }}
+          META_FB_SAYFA: ${{ secrets.META_FB_SAYFA }}
+          REELS_ANAHTAR: ${{ secrets.REELS_ANAHTAR }}
+          YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+          GSC_SA_JSON: ${{ secrets.GSC_SA_JSON }}
+          PYTHONIOENCODING: utf-8
+        run: python tools/reels/kanal_saatlik.py

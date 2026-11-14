@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Facebook etkinlik kapağı</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;800;900&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="position: relative; width: 1920px; height: 1005px; overflow: hidden; font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #ffffff; background: {{zemin}}">
+
+<img src="{{kare}}" alt="" style="display: {{sabitGorunum}}; position: absolute; left: -40px; top: -40px; width: 2000px; height: 1085px; object-fit: cover; filter: blur(28px) brightness(0.5)">
+<div style="display: {{sabitGorunum}}; position: absolute; inset: 0; background: rgba(20,33,61,0.55)"></div>
+
+<div style="position: absolute; left: 470px; top: 0; width: 980px; height: 1005px; display: flex; align-items: stretch; box-shadow: {{golge}}">
+<div style="flex: 0 0 600px; width: 600px; min-width: 0; box-sizing: border-box; padding: 60px 24px 170px 34px; background: rgba(20,33,61,0.6); display: flex; flex-direction: column; justify-content: center; gap: 18px">
+<img src="{{logo}}" alt="ADEN" style="display: {{logoGorunum}}; width: 150px; height: auto; margin-bottom: 6px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5))">
+<div style="font-size: {{baslikBoy}}px; line-height: 0.98; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-wrap: balance; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 8px 20px rgba(0,0,0,0.45)">{{meslek}}</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<div style="font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: 1px; text-transform: uppercase">MYK Belgesi Sınavı</div>
+<div style="padding: 4px 12px; border: 3px solid rgba(255,255,255,0.85); border-radius: 999px; font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap">Seviye {{seviye}}</div>
+</div>
+<div style="display: flex; align-items: stretch; gap: 16px; margin-top: 6px">
+<div style="flex: none; width: 118px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0 10px; background: {{vurgu}}; border-radius: 16px; box-shadow: 0 12px 22px rgba(0,0,0,0.4)">
+<div style="font-size: 72px; line-height: 0.9; font-weight: 900">{{gun}}</div>
+<div style="font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase">{{ay}}</div>
+</div>
+<div style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 48px; line-height: 1; font-weight: 900; text-transform: uppercase">
+<svg width="38" height="38" viewBox="0 0 24 24" fill="{{ikon}}" stroke="{{ikon}}" stroke-width="1" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.6" fill="#1a2a68" stroke="none"></circle></svg>
+{{il}}
+</div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 32px; line-height: 1.05; font-weight: 800">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{ikon}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+{{gunAdi}} · {{saat}}
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: stretch; margin-top: 10px; border-radius: 16px; overflow: hidden; box-shadow: 0 14px 22px rgba(0,0,0,0.3)">
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 12px 22px; background: #ffffff; color: #1a2a68">
+<div style="font-size: 18px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase">Toplam ücret</div>
+<div style="font-size: 42px; line-height: 1; font-weight: 900; white-space: nowrap">{{toplam}}</div>
+<div style="font-size: 18px; line-height: 1.2; font-weight: 700; opacity: 0.85">{{ucretNot}}</div>
+</div>
+<div style="flex: 0 0 230px; display: flex; flex-direction: column; justify-content: center; padding: 10px 16px; background: {{vurgu}}; color: #ffffff">
+<div style="font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px">Başvuru</div>
+<div style="font-size: 28px; line-height: 1.05; font-weight: 800">adenbelge.com.tr</div>
+</div>
+</div>
+</div>
+<img src="{{kare}}" alt="" style="visibility: {{fotoGorunurluk}}; flex: 0 0 380px; width: 380px; height: 1005px; object-fit: cover; object-position: 50% 25%">
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"logo":{"editor":"boolean","default":true,"section":"Kapak"},"meslek":{"editor":null,"default":"Çelik Kaynakçısı"},"seviye":{"editor":null,"default":"3"},"il":{"editor":null,"default":"Elazığ"},"gun":{"editor":null,"default":"20"},"ay":{"editor":null,"default":"Kasım"},"gunAdi":{"editor":null,"default":"Cuma"},"saat":{"editor":null,"default":"08:30"},"toplam":{"editor":null,"default":"9.000 TL"},"ucretNot":{"editor":null,"default":"sınav + belge basım · KDV dahil"},"kare":{"editor":null,"default":"/_blob/5729748c1bdd240f2f02e076bcad64a2"},"logoAdres":{"editor":null,"default":"/_blob/1f576179f676735ee248e844daca50fb"},"hareketli":{"editor":"boolean","default":false,"section":"Kapak"},"$preview":{"width":1920,"height":1005}}'>
+class Component extends DCLogic {
+// FACEBOOK ETKİNLİK KAPAĞI (08.11.2026): 1920×1005; tek oturum. BÜTÜN BİLGİ + FOTOĞRAF ORTADAKİ ~KARE ALANDA (x 470–1450):
+// Facebook iOS uygulaması etkinlik başlığında kapağın ortasındaki ~1017×1005'i gösterir (kullanıcının telefon ekran görüntüsünden ölçüldü; ilk
+// varsayım 1200 px yanlıştı), alt ~%15 beyaza solar → yazı bloğu üstte (alt boşluk 170 px). Kenarlarda yalnız bulanık zemin.
+// HAREKETLİ (08.11.2026, kullanıcı 'orta kare dışı video akışına uygun hareketli'): hareketli=true → zemin, bulanık kare ve fotoğraf yeri SAYDAM;
+// etkinlik.py videoyu altlarına yerleştirir (kenarlar bulanık klip, fotoğraf yerinde klibin kendisi). Gölge videoda ffmpeg'le değil, yok.
+// Renk sabit ADEN açık mavisi (beyaz yazıya ≥ 3:1 olacak kadar koyu).
+renderVals() {
+const p = this.props;
+const meslek = p.meslek ?? 'Çelik Kaynakçısı';
+const n = meslek.length;
+return {
+meslek, baslikBoy: n > 34 ? 46 : n > 24 ? 54 : n > 16 ? 62 : 74,
+seviye: p.seviye ?? '3', il: p.il ?? 'Elazığ', gun: p.gun ?? '20', ay: p.ay ?? 'Kasım', gunAdi: p.gunAdi ?? 'Cuma', saat: p.saat ?? '08:30',
+toplam: p.toplam ?? '9.000 TL', ucretNot: p.ucretNot ?? 'sınav + belge basım · KDV dahil',
+kare: p.kare ?? '/_blob/5729748c1bdd240f2f02e076bcad64a2', logo: p.logoAdres ?? '/_blob/1f576179f676735ee248e844daca50fb',
+logoGorunum: (p.logo ?? true) ? 'block' : 'none',
+zemin: p.hareketli ? 'transparent' : '#14213D', sabitGorunum: p.hareketli ? 'none' : 'block', fotoGorunurluk: p.hareketli ? 'hidden' : 'visible',
+golge: p.hareketli ? 'none' : '0 0 80px rgba(0,0,0,0.45)', vurgu: '#0f84b8', ikon: '#15A5DF'
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# FACEBOOK ETKİNLİKLERİ (08.11.2026; tools/reels/etkinlik.py, panel /yonetim/fb-etkinlikleri): Reels yayınıyla AYNI PLAN — 11:30 + 18:30 TSİ
+# + panelde oturum değişince ('oturum') + elle (kullanıcı 08.11.2026: "her saat çok sık, GitHub Actions'ı yormayalım").
+# 1) sayfadaki etkinlikleri okur → sunucu eşler (yayınlanan iş kendiliğinden kapanır) · 2) kapağı eksik/değişmiş oturum varsa Playwright kurulur, kapak üretilir.
+name: Etkinlik
+on:
+  schedule:
+    - cron: '30 8 * * *'   # 11:30 TSİ (reels.yml ile aynı)
+    - cron: '30 15 * * *'  # 18:30 TSİ
+  repository_dispatch:
+    types: [oturum]
+  workflow_dispatch:
+concurrency:
+  group: etkinlik
+  cancel-in-progress: false
+jobs:
+  etkinlik:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      META_SOSYAL_TOKEN: ${{ secrets.META_SOSYAL_TOKEN }}
+      META_IG_HESAP: ${{ secrets.META_IG_HESAP }}
+      META_FB_SAYFA: ${{ secrets.META_FB_SAYFA }}
+      REELS_ANAHTAR: ${{ secrets.REELS_ANAHTAR }}
+      REELS_KAYNAK: ${{ github.workspace }}/kaynak
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bağımlılıklar
+        run: pip install requests
+      - name: Eşleme + kapak gereği
+        id: gerek
+        run: python tools/reels/etkinlik.py --esle --gerek
+      - name: Kapak araçları
+        if: steps.gerek.outputs.kapak == '1'
+        run: |
+          pip install playwright imageio-ffmpeg
+          python -m playwright install --with-deps chromium
+      - name: Kapak
+        if: steps.gerek.outputs.kapak == '1'
+        run: python tools/reels/etkinlik.py --kapak

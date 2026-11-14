@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Sınav oturumu katmanı</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+@keyframes yuksel{from{transform:translateY(60px)}to{transform:translateY(0)}}
+@keyframes kayma{from{transform:translateX(-80px)}to{transform:translateX(0)}}
+@keyframes yakin{from{transform:scale(.92)}to{transform:scale(1)}}
+@keyframes nabiz{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes acil{from{-webkit-mask-position:100% 0;mask-position:100% 0}to{-webkit-mask-position:0 0;mask-position:0 0}}
+@keyframes parilti{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+@keyframes paritiIlk{from{background-position:100% 0}to{background-position:0 0}}
+.h-tarih,.h-ucret{-webkit-mask-image:linear-gradient(110deg,#000 42%,transparent 48%);mask-image:linear-gradient(110deg,#000 42%,transparent 48%);-webkit-mask-size:300% 100%;mask-size:300% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.bant{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(110deg,rgba(255,255,255,0) 40%,rgba(255,255,255,0.45) 45%,rgba(255,255,255,0) 50%);background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0}
+/* 0. kare: meslek + seviye + TÜM oturum satırları + ücret + başvuru ekranda (11.11.2026, kullanıcı "YAP": Instagram duyurusu izleme başına
+   ortanca 1,63 sn izleniyordu, 2. saniyede gelen ücret/başvuru izleyicinin çoğuna ulaşmıyordu). Hareketler ilk karedeki içeriği gizlemez. */
+.h-yuksel{animation:yuksel .6s cubic-bezier(.2,.8,.2,1) both}
+.h-kayma{animation:kayma .6s cubic-bezier(.2,.8,.2,1) both}
+.h-yakin{animation:yakin .6s cubic-bezier(.2,.8,.2,1) both}
+.h-tarih{animation:acil .5s cubic-bezier(.2,.8,.2,1) both}
+.h-ucret{animation:acil .5s cubic-bezier(.2,.8,.2,1) both}
+.h-pin{animation:nabiz 1.6s .8s ease-in-out infinite}
+.h-parilti{animation:paritiIlk .5s cubic-bezier(.2,.8,.2,1), parilti 1.6s .5s ease-in-out infinite}
+.h-parilti2{animation:paritiIlk .5s cubic-bezier(.2,.8,.2,1), parilti 1.6s .5s ease-in-out infinite}
+@keyframes ok{0%,100%{transform:translateX(0)}50%{transform:translateX(14px)}}
+@keyframes nabizKutu{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.h-ok{animation:ok .8s .5s ease-in-out infinite}
+.h-cta{animation:nabizKutu 1.6s .5s ease-in-out infinite}
+</style>
+</helmet>
+<div style="position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #ffffff; background: transparent">
+
+<sc-if value="{{onizleme}}" hint-placeholder-val="{{ true }}">
+<img src="{{kare}}" alt="" style="position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover">
+</sc-if>
+
+<div style="position: absolute; left: 0; top: 0; width: 1080px; height: 420px; background: {{t.ustPerde}}"></div>
+<div style="position: absolute; left: 0; top: 600px; width: 1080px; height: 1320px; background: {{t.altPerde}}"></div>
+
+<img src="/_blob/a9b17b44cea2936eb29ae63c9c2d9d93" alt="ADEN" style="display: {{logoGorunum}}; position: absolute; left: {{t.logoSol}}px; top: {{t.logoUst}}px; width: {{t.logoEn}}px; height: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)) drop-shadow(0 0 2px rgba(17,28,72,0.6))">
+
+<div class="{{c.kart}}" style="position: absolute; left: {{t.panelSol}}px; bottom: {{t.panelAlt}}px; width: {{t.panelEn}}px; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 14px">
+
+<div style="font-size: {{baslikBoy}}px; line-height: 0.98; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-wrap: balance; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.45), 0 14px 36px rgba(0,0,0,0.5)">{{meslek}}</div>
+<div style="margin-top: -4px; display: flex; align-items: center; gap: 18px">
+<div style="font-size: {{belgeBoy}}px; line-height: 1; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.45), 0 14px 36px rgba(0,0,0,0.5)">MYK Belgesi</div>
+<div style="padding: 6px 18px; border: 3px solid rgba(255,255,255,0.85); border-radius: 999px; font-size: 30px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap">Seviye {{seviye}}</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px">
+<sc-for list="{{oturumlar}}" as="o" hint-placeholder-count="3">
+<div style="display: flex; align-items: stretch; gap: 20px">
+<div style="flex: none; display: flex; filter: drop-shadow(0 14px 20px rgba(0,0,0,0.45))">
+<div class="{{c.tarih}}" style="position: relative; overflow: hidden; flex: none; width: 150px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0 10px; background: {{t.vurgu}}; border-radius: {{t.tarihKose}}; color: #ffffff; text-shadow: 0 2px 0 rgba(0,0,0,0.35), 0 5px 14px rgba(0,0,0,0.45)">
+<div class="{{c.cta}}" style="display: flex; flex-direction: column; align-items: center">
+<div style="font-size: 84px; line-height: 0.9; font-weight: 900">{{o.gun}}</div>
+<div style="font-size: 26px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase">{{o.ay}}</div>
+</div>
+<div class="bant {{c.parilti}}"></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; justify-content: center; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 52px; line-height: 1; font-weight: 900; text-transform: uppercase; text-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.45)">
+<svg class="{{c.pin}}" width="42" height="42" viewBox="0 0 24 24" fill="{{t.ikon}}" stroke="{{t.ikon}}" stroke-width="1" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.6" fill="#1a2a68" stroke="none"></circle></svg>
+{{o.il}}
+<sc-if value="{{o.ilceVar}}" hint-placeholder-val="{{ false }}"><span style="font-size: 36px; font-weight: 800; opacity: 0.9">· {{o.ilce}}</span></sc-if>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 38px; line-height: 1.05; font-weight: 800; text-shadow: 0 2px 0 rgba(0,0,0,0.35), 0 5px 12px rgba(0,0,0,0.45)">
+<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{{t.ikon}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+{{o.gunAdi}} · {{o.saat}}
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="align-self: stretch; display: flex; margin-top: 8px; filter: drop-shadow(0 16px 20px rgba(0,0,0,0.30))">
+<div class="{{c.ucret}}" style="position: relative; flex: 1 1 auto; display: flex; flex-wrap: wrap; align-items: stretch; border-radius: 22px; overflow: hidden; text-align: left">
+<div style="flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 10px 20px; background: #ffffff; color: #1a2a68">
+<div style="font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: {{t.ayRenk}}">Toplam ücret</div>
+<div style="font-size: 52px; line-height: 1; font-weight: 900; white-space: nowrap">{{toplam}} TL</div>
+<div style="font-size: 24px; line-height: 1.25; font-weight: 700; opacity: 0.85; white-space: nowrap">sınav + belge basım · {{ucretNot}}</div>
+</div>
+<div class="{{c.cta}}" style="position: relative; overflow: hidden; flex: 1 1 300px; min-width: 300px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 20px; background: {{t.cta}}; color: #ffffff">
+<div style="display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px">Başvuru</span><span style="font-size: 34px; line-height: 1.05; font-weight: 800">adenbelge.com.tr</span></div>
+<svg class="{{c.ok}}" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</div>
+<div class="bant {{c.parilti2}}"></div>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"adet":{"editor":"int","default":3,"min":1,"max":3,"section":"Katman"},"tasarim":{"editor":"int","default":1,"min":0,"max":15,"section":"Katman"},"renk":{"editor":"int","default":1,"min":0,"max":15,"section":"Katman"},"platform":{"editor":"enum","options":["ig","fb","yt"],"default":"ig","section":"Katman"},"onizleme":{"editor":"boolean","default":true,"section":"Katman"},"hareket":{"editor":"boolean","default":true,"section":"Katman"},"logo":{"editor":"boolean","default":true,"section":"Katman"},"meslek":{"editor":null,"default":"Çelik Kaynakçısı"},"seviye":{"editor":null,"default":"3"},"oturumlar":{"editor":null},"ucret":{"editor":null,"default":"7.500"},"ucretNot":{"editor":null,"default":"KDV dahil"},"basim":{"editor":null,"default":"1.500"},"kare":{"editor":null,"default":"/_blob/5729748c1bdd240f2f02e076bcad64a2"},"$preview":{"width":1080,"height":1920}}'>
+class Component extends DCLogic {
+// ÇOKLU OTURUM (kullanıcı 08.11.2026): il × meslek videosu en çok 3 oturum gösterir — ilin kendi oturumu en üstte, sonra komşu
+// iller (şehir başına en yakın tarih, tarih sırası). Tek büyük tarih kutusu yerine oturum satırları; ücret + başvuru kutusu tek.
+paletler() {
+const T = [
+['Kraliyet laciverti × Deniz yeşili', '#2E8B57', '#1B2A6B'], ['Zümrüt × Gümüş mavisi', '#8DA9C4', '#0B5E3F'],
+['Safir × ADEN açık mavi', '#15A5DF', '#0F2D5C'], ['Petrol × Parliament mavi', '#2F5FA7', '#0E5A5C'],
+['Gece × Altın', '#D4AF37', '#0B1026'], ['Yeşim × Antik altın', '#B8860B', '#0C4A3E'],
+['Okyanus × Bronz', '#CD7F32', '#0B4F7A'], ['Derin zümrüt × Yeşim taşı', '#00A86B', '#004225'],
+['Mürekkep × Nane', '#7FC8A9', '#14213D'], ['Orman × Şampanya', '#E6C79C', '#12372A'],
+['Deniz × Zümrüt taşı', '#50C878', '#0A4D68'], ['Oniks × Çelik mavisi', '#5B8DD6', '#121417'],
+['Kobalt × Gök mavisi', '#7EC8E3', '#1F3FA0'], ['Gece yeşili × Tavus mavisi', '#0E9AA7', '#0F2E26'],
+['Çelik × Kraliyet mavisi', '#4169E1', '#22344A'], ['Arduvaz × Gül altın', '#B76E79', '#1E2A38']
+];
+const rgb = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
+const L = (h) => rgb(h).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }).reduce((t, x, k) => t + x * [0.2126, 0.7152, 0.0722][k], 0);
+const hex = (c) => '#' + c.map((x) => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, '0')).join('');
+const koyulas = (h) => { let c = rgb(h); for (let i = 0; i < 100 && 1.05 / (L(hex(c)) + 0.05) < 3; i++) c = c.map((x) => x * 0.98); return hex(c); };
+return T.map(([ad, v, d]) => { const z = koyulas(v); return { ad, koyu: rgb(d), vurgu: z, ozgun: v, ay: d, cta: z }; });
+}
+guvenli() {
+const tablo = { ig: { sol: 64, en: 850, alt: 420, ust: 300, logoEn: 240 }, fb: { sol: 130, en: 730, alt: 400, ust: 113, logoEn: 200 }, yt: { sol: 130, en: 730, alt: 560, ust: 113, logoEn: 200 } };
+return tablo[this.props.platform] || tablo.yt;
+}
+tasarimDegerleri(n) {
+const b = n % 4;
+const p = this.paletler()[((Number(this.props.renk ?? n) % 16) + 16) % 16];
+const g = this.guvenli();
+const r = (a) => this.paletler()[8].koyu.join(',') + ',' + a;
+return {
+panelSol: g.sol, panelEn: g.en, panelAlt: g.alt, logoSol: g.sol, logoUst: g.ust + 12, logoEn: g.logoEn,
+ustPerde: 'linear-gradient(180deg, rgba(' + r(0.78) + ') 0%, rgba(' + r(0.35) + ') 55%, rgba(' + r(0) + ') 100%)',
+// üç satır yazı bloğunu yukarı taşıdığı için alt perde 860 yerine 600'de başlar
+altPerde: 'linear-gradient(180deg, rgba(' + r(0) + ') 0%, rgba(' + r(0.5) + ') 25%, rgba(' + r(0.68) + ') 55%, rgba(' + r(0.72) + ') 100%)',
+vurgu: p.vurgu, ikon: p.ozgun, ayRenk: p.ay, cta: p.cta,
+tarihKose: ['28px', '12px', '0px', '20px'][b],
+kart: ['h-yuksel', 'h-kayma', 'h-yakin', 'h-yuksel'][b]
+};
+}
+renderVals() {
+const p = this.props;
+const meslek = p.meslek ?? 'Çelik Kaynakçısı';
+const uzun = meslek.length;
+const baslikBoy = uzun > 34 ? 56 : uzun > 24 ? 64 : uzun > 16 ? 76 : 88;
+const h = p.hareket ?? true;
+const t = this.tasarimDegerleri(((Number(p.tasarim ?? 0) % 16) + 16) % 16);
+const k = (ad) => (h ? ad : '');
+const sayi = (s) => parseInt(String(s).replace(/\./g, ''), 10);
+const toplam = String(sayi(p.ucret ?? '7.500') + sayi(p.basim ?? '1.500')).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+// örnek: Erzincan · Çelik Kaynakçısı — Erzincan'da oturum yok, komşulardan üçü (Malatya satırı yalnız 3 satırı göstermek için örnek)
+// satır = aynı merkez + aynı gün; saat birden çoksa yan yana (en çok 3); ilçe yalnız aynı ilde birden çok merkez gösterilince
+const ornek = [
+{ il: 'Elazığ', gun: '11', ay: 'Kasım', gunAdi: 'Çarşamba', saat: '08:30 · 13:30' },
+{ il: 'Sivas', gun: '13', ay: 'Kasım', gunAdi: 'Cuma', saat: '13:30' },
+{ il: 'Malatya', gun: '16', ay: 'Kasım', gunAdi: 'Pazartesi', saat: '08:30' }
+];
+const adet = Math.max(1, Math.min(3, Number(p.adet ?? 3)));
+const oturumlar = (Array.isArray(p.oturumlar) && p.oturumlar.length ? p.oturumlar : ornek).slice(0, adet)
+.map((o) => Object.assign({}, o, { ilce: o.ilce || '', ilceVar: !!o.ilce }));
+return {
+meslek, baslikBoy, belgeBoy: Math.round(baslikBoy * 0.6), t, toplam, oturumlar,
+logoGorunum: (p.logo ?? true) ? 'block' : 'none', seviye: p.seviye ?? '3', ucretNot: p.ucretNot ?? 'KDV dahil',
+kare: p.kare ?? '/_blob/5729748c1bdd240f2f02e076bcad64a2', onizleme: p.onizleme ?? true,
+c: { kart: k(t.kart), tarih: k('h-tarih'), ucret: k('h-ucret'), pin: k('h-pin'), parilti: k('h-parilti'), parilti2: k('h-parilti2'), cta: k('h-cta'), ok: k('h-ok') }
+};
+}
+}
+</script>
+</body>
+</html>
