@@ -1,0 +1,20 @@
+name: imunify-yokla
+on: workflow_dispatch
+jobs:
+  yokla:
+    strategy:
+      fail-fast: false
+      matrix:
+        n: [1, 2, 3, 4, 5, 6]
+    runs-on: ubuntu-latest
+    steps:
+      - name: yokla
+        run: |
+          echo "IP $(curl -s https://api.ipify.org)"
+          for u in https://adenbelge.com.tr/tr https://aden-hr.com/tr https://aden-cert.com/en https://adenbelge.com.tr/api/sosyal/reels-plan https://sosyal.adenbelge.com.tr/api/sosyal/reels-plan; do
+            for i in 1 2 3; do
+              kod=$(curl -s -o /tmp/y.html -w '%{http_code}' -A 'python-requests/2.32' "$u")
+              if grep -q 'One moment, please' /tmp/y.html; then s=BEKLEME_SAYFASI; else s=normal; fi
+              echo "SONUC $u $kod $s"
+            done
+          done
